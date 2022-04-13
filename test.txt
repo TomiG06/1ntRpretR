@@ -1,0 +1,10 @@
+push 97
+dupl
+print
+pop
+pop
+push 100
+print
+push 1
+sub
+ifeq 7
