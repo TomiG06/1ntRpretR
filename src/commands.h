@@ -16,7 +16,8 @@ enum {
     ifeq,
     jump,
     print,
-    dupl
+    dupl,
+    blank_line
 };
 
 //Checks if operand is decimal number
@@ -78,28 +79,22 @@ void perfJMP(int newLine, FILE* f) {
 int64_t* parseLine(char* statement) {
     int64_t* ret = (int64_t*)malloc(2*sizeof(int64_t));
     size_t len = strlen(statement);
-    char* command = (char*)malloc(len);
+    char* command = (char*)calloc(len, 1); //Calloc to not have to null terminate
     char space_is_met = 0;
-    char* operand = (char*)malloc(len);
+    char* operand = (char*)calloc(len, 1); //Same
     size_t index = 0;
 
     for(size_t l = 0; l < len; ++l) {
-        if(!space_is_met) command[l] = statement[l];
-        else {
-            operand[index++] = statement[l];
-            continue;
-        }
         if(statement[l] == ' ') {
-            command[l] = 0;
+            if(statement[l+1] == ' ') continue;
+            if(!strlen(command)) continue;
             space_is_met = 1;
             continue;
         }
+        if(!space_is_met) command[l] = statement[l];
+        else operand[index++] = statement[l];
     }
 
-    //Null termination
-    if(!space_is_met) command[len] = 0;
-    operand[index] = 0;
-    
     if(!strcmp(command, "push")) ret[0] = push;
     else if(!strcmp(command, "pop")) ret[0] = pop;
     else if(!strcmp(command, "add")) ret[0] = add;
@@ -108,20 +103,27 @@ int64_t* parseLine(char* statement) {
     else if(!strcmp(command, "jump")) ret[0] = jump;
     else if(!strcmp(command, "print")) ret[0] = print;
     else if(!strcmp(command, "dupl")) ret[0] = dupl;
+    else if(!strcmp(command, "")) ret[0] = blank_line;
     else {
         fprintf(stderr, "'%s' command not found\n", command);
+        free(command);
+        free(operand);
         exit(1);
     }
 
     if(ret[0] == push || ret[0] == ifeq || ret[0] == jump) {
         if(!strcmp(operand, "")) {
             fprintf(stderr, "Error: '%s' command must contain an operand\n", command);
+            free(command);
+            free(operand);
             exit(1);
         }
         ret[1] = strtol(operand, NULL, OperandIsNumber(operand));
     } else {
         if(strcmp(operand, "")) {
             fprintf(stderr, "Error: '%s' command uses no operand\n", command);
+            free(command);
+            free(operand);
             exit(1);
         }
     }
@@ -160,6 +162,8 @@ char execute(stack* s, FILE* f, char* statement) {
         case dupl:
             temp = peek_stack(s);
             push_in_stack(s, temp);
+            break;
+        case blank_line:
             break;
     }
 }

@@ -1,4 +1,4 @@
-push 97
+push  97
 dupl
 print
 pop
@@ -9,3 +9,4 @@ push 1
 sub
 
   ifeq    7   
+
