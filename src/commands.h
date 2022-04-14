@@ -17,7 +17,7 @@ enum {
     jump,
     print,
     dupl,
-    blank_line
+    ignore_line
 };
 
 //Checks if operand is decimal number
@@ -77,7 +77,14 @@ void perfJMP(int newLine, FILE* f) {
 
 //Returns array with command and operand if exists
 int64_t* parseLine(char* statement) {
+    
     int64_t* ret = (int64_t*)malloc(2*sizeof(int64_t));
+    //Check if line should be ignored
+    if(statement[0] == '#' || !strcmp(statement, "")) {
+        ret[0] = ignore_line;
+        return ret;
+    }
+
     size_t len = strlen(statement);
     char* command = (char*)calloc(len, 1); //Calloc to not have to null terminate
     char space_is_met = 0;
@@ -103,7 +110,6 @@ int64_t* parseLine(char* statement) {
     else if(!strcmp(command, "jump")) ret[0] = jump;
     else if(!strcmp(command, "print")) ret[0] = print;
     else if(!strcmp(command, "dupl")) ret[0] = dupl;
-    else if(!strcmp(command, "")) ret[0] = blank_line;
     else {
         fprintf(stderr, "'%s' command not found\n", command);
         free(command);
@@ -163,7 +169,7 @@ char execute(stack* s, FILE* f, char* statement) {
             temp = peek_stack(s);
             push_in_stack(s, temp);
             break;
-        case blank_line:
+        case ignore_line:
             break;
     }
 }

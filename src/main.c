@@ -1,6 +1,4 @@
 #include <unistd.h>
-#include <stdlib.h>
-#include <stdint.h>
 #include <stdio.h>
 #include "interpreter.h"
 
