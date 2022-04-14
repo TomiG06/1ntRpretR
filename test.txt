@@ -3,8 +3,9 @@ dupl
 print
 pop
 pop
-push 100
+push 256
 print
-push 1
+push 1    
 sub
-ifeq 7
+
+  ifeq    7   
