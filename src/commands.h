@@ -18,7 +18,8 @@ enum {
     print,
     dupl,
     mul,
-    ignore_line
+    ignore_line,
+    swap
 };
 
 char commands_with_op_or_param[] = {push, ifeq, jump, print};
@@ -125,6 +126,7 @@ int64_t* parseLine(char* statement) {
     else if(!strcmp(command, "print")) ret[0] = print;
     else if(!strcmp(command, "dupl")) ret[0] = dupl;
     else if(!strcmp(command, "mul")) ret[0] = mul;
+    else if(!strcmp(command, "swap")) ret[0] = swap;
     else {
         fprintf(stderr, "'%s' command not found\n", command);
         free(command);
@@ -158,6 +160,7 @@ int64_t* parseLine(char* statement) {
 //Checks for command and executes it 
 char execute(stack* s, FILE* f, char* statement) {
     int64_t* parts = parseLine(statement);
+    int64_t swap1, swap2;
 
     switch(parts[0]) {
         case push:
@@ -193,6 +196,16 @@ char execute(stack* s, FILE* f, char* statement) {
             break;
         case dupl:
             push_in_stack(s, peek_stack(s));
+            break;
+        case swap:
+            if(s->TOP > 0) {
+                swap1 = peek_stack(s);
+                pop_from_stack(s);
+                swap2 = peek_stack(s);
+                pop_from_stack(s);
+                push_in_stack(s, swap1);
+                push_in_stack(s, swap2);
+            }
             break;
         case ignore_line:
             break;
