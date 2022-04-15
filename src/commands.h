@@ -17,8 +17,19 @@ enum {
     jump,
     print,
     dupl,
+    mul,
     ignore_line
 };
+
+char commands_with_op_or_param[] = {push, ifeq, jump, print};
+size_t cop_length = sizeof(commands_with_op_or_param);
+
+char command_uses_op_or_param(int command) {
+    for(size_t i = 0; i < cop_length; ++i) {
+        if(commands_with_op_or_param[i] == command) return 1;
+    }
+    return 0;
+}
 
 //Checks if operand is decimal number
 uint8_t OperandIsNumber(char* str) {
@@ -44,6 +55,9 @@ int64_t ArithmeticOp(stack *s, size_t op) {
             break;
         case sub:
             push_in_stack(s, second-first);
+            break;
+        case mul:
+            push_in_stack(s, second*first);
             break;
         default:
             break;
@@ -110,6 +124,7 @@ int64_t* parseLine(char* statement) {
     else if(!strcmp(command, "jump")) ret[0] = jump;
     else if(!strcmp(command, "print")) ret[0] = print;
     else if(!strcmp(command, "dupl")) ret[0] = dupl;
+    else if(!strcmp(command, "mul")) ret[0] = mul;
     else {
         fprintf(stderr, "'%s' command not found\n", command);
         free(command);
@@ -117,7 +132,7 @@ int64_t* parseLine(char* statement) {
         exit(1);
     }
 
-    if(ret[0] == push || ret[0] == ifeq || ret[0] == jump) {
+    if(command_uses_op_or_param(ret[0])) {
         if(!strcmp(operand, "")) {
             fprintf(stderr, "Error: '%s' command must contain an operand\n", command);
             free(command);
@@ -143,7 +158,6 @@ int64_t* parseLine(char* statement) {
 //Checks for command and executes it 
 char execute(stack* s, FILE* f, char* statement) {
     int64_t* parts = parseLine(statement);
-    int64_t temp;
 
     switch(parts[0]) {
         case push:
@@ -154,6 +168,7 @@ char execute(stack* s, FILE* f, char* statement) {
             break;
         case add:
         case sub:
+        case mul:
             ArithmeticOp(s, parts[0]);
             break;
         case ifeq:
@@ -163,15 +178,27 @@ char execute(stack* s, FILE* f, char* statement) {
             perfJMP(parts[1]-1, f);
             break;
         case print:
-            putchar(peek_stack(s));
+        /*
+            1: print ascii value
+            0: print numeric value
+        */
+            if(parts[1] == 1) putchar(peek_stack(s));
+            else if(!parts[1]) printf("%ld", peek_stack(s));
+            else {
+                fprintf(stderr, "Error: invalid parameter '%ld'\n", parts[1]);
+                free(parts);
+                free(s);
+                exit(1);
+            }
             break;
         case dupl:
-            temp = peek_stack(s);
-            push_in_stack(s, temp);
+            push_in_stack(s, peek_stack(s));
             break;
         case ignore_line:
             break;
     }
+
+    free(parts);
 }
 
 #endif
