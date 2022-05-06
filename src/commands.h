@@ -89,8 +89,21 @@ void perfJMP(int newLine, FILE* f) {
     exit(1);
 }
 
+//https://stackoverflow.com/questions/122616/how-do-i-trim-leading-trailing-whitespace-in-a-standard-way
+char* trim(char* str, char del) {
+    size_t len = strlen(str);
+    while(str[len-1] == del) --len; //removes char to trim in the end while there is one
+    /*
+        removes char to trim in the beginning while there is one
+        due to the fact that a char is removed, length must decrement
+    */
+    while(str[0] == del) ++str, --len;
+    return strndup(str, len);
+}
+
 //Returns array with command and operand if exists
-int64_t* parseLine(char* statement) {
+int64_t* parse_line(char* uncleaned_statement) {
+    char* statement = trim(uncleaned_statement, ' ');
     
     int64_t* ret = (int64_t*)malloc(2*sizeof(int64_t));
     //Check if line should be ignored
@@ -157,8 +170,7 @@ int64_t* parseLine(char* statement) {
 }
 
 //Checks for command and executes it 
-char execute(stack* s, FILE* f, char* statement) {
-    int64_t* parts = parseLine(statement);
+char execute(stack* s, FILE* f, int64_t* parts) {
     int64_t swap1, swap2;
 
     switch(parts[0]) {
