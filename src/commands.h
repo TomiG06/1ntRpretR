@@ -7,27 +7,26 @@
 #include <ctype.h>
 #include "stack.h"
 
-//In order not to use 'magic numbers'
 enum {
-    push = 0,
-    pop,
-    add,
-    sub,
-    ifeq,
-    jump,
-    print,
-    dupl,
-    mul,
-    ignore_line,
-    swap
+    PUSH = 0,
+    POP,
+    ADD,
+    SUB,
+    IFEQ,
+    JUMP,
+    PRINT,
+    DUPL,
+    MUL,
+    IGNORE,
+    SWAP
 };
 
-char commands_with_op_or_param[] = {push, ifeq, jump, print};
-size_t cop_length = sizeof(commands_with_op_or_param);
+char commands_with_param[] = {PUSH, IFEQ, JUMP, PRINT};
+size_t cwp_length = sizeof(commands_with_param);
 
-char command_uses_op_or_param(int command) {
-    for(size_t i = 0; i < cop_length; ++i) {
-        if(commands_with_op_or_param[i] == command) return 1;
+char command_uses_param(char command) {
+    for(size_t i = 0; i < cwp_length; ++i) {
+        if(commands_with_param[i] == command) return 1;
     }
     return 0;
 }
@@ -43,7 +42,7 @@ uint8_t OperandIsNumber(char* str) {
     return 10;
 }
 
-//Does sub and add
+//Does sub, add and mul
 int64_t ArithmeticOp(stack *s, size_t op) {
     int64_t first = peek_stack(s);
     pop_from_stack(s);
@@ -51,13 +50,13 @@ int64_t ArithmeticOp(stack *s, size_t op) {
     pop_from_stack(s);
     
     switch(op) {
-        case add:
+        case ADD:
             push_in_stack(s, second+first);
             break;
-        case sub:
+        case SUB:
             push_in_stack(s, second-first);
             break;
-        case mul:
+        case MUL:
             push_in_stack(s, second*first);
             break;
         default:
@@ -96,7 +95,7 @@ int64_t* parseLine(char* statement) {
     int64_t* ret = (int64_t*)malloc(2*sizeof(int64_t));
     //Check if line should be ignored
     if(statement[0] == '#' || !strcmp(statement, "")) {
-        ret[0] = ignore_line;
+        ret[0] = IGNORE;
         return ret;
     }
 
@@ -117,16 +116,16 @@ int64_t* parseLine(char* statement) {
         else operand[index++] = statement[l];
     }
 
-    if(!strcmp(command, "push")) ret[0] = push;
-    else if(!strcmp(command, "pop")) ret[0] = pop;
-    else if(!strcmp(command, "add")) ret[0] = add;
-    else if(!strcmp(command, "sub")) ret[0] = sub;
-    else if(!strcmp(command, "ifeq")) ret[0] = ifeq;
-    else if(!strcmp(command, "jump")) ret[0] = jump;
-    else if(!strcmp(command, "print")) ret[0] = print;
-    else if(!strcmp(command, "dupl")) ret[0] = dupl;
-    else if(!strcmp(command, "mul")) ret[0] = mul;
-    else if(!strcmp(command, "swap")) ret[0] = swap;
+    if(!strcmp(command, "push")) ret[0] = PUSH;
+    else if(!strcmp(command, "pop")) ret[0] = POP;
+    else if(!strcmp(command, "add")) ret[0] = ADD;
+    else if(!strcmp(command, "sub")) ret[0] = SUB;
+    else if(!strcmp(command, "ifeq")) ret[0] = IFEQ;
+    else if(!strcmp(command, "jump")) ret[0] = JUMP;
+    else if(!strcmp(command, "print")) ret[0] = PRINT;
+    else if(!strcmp(command, "dupl")) ret[0] = DUPL;
+    else if(!strcmp(command, "mul")) ret[0] = MUL;
+    else if(!strcmp(command, "swap")) ret[0] = SWAP;
     else {
         fprintf(stderr, "'%s' command not found\n", command);
         free(command);
@@ -134,7 +133,7 @@ int64_t* parseLine(char* statement) {
         exit(1);
     }
 
-    if(command_uses_op_or_param(ret[0])) {
+    if(command_uses_param(ret[0])) {
         if(!strcmp(operand, "")) {
             fprintf(stderr, "Error: '%s' command must contain an operand\n", command);
             free(command);
@@ -163,24 +162,24 @@ char execute(stack* s, FILE* f, char* statement) {
     int64_t swap1, swap2;
 
     switch(parts[0]) {
-        case push:
+        case PUSH:
             push_in_stack(s, parts[1]);
             break;
-        case pop:
+        case POP:
             pop_from_stack(s);
             break;
-        case add:
-        case sub:
-        case mul:
+        case ADD:
+        case SUB:
+        case MUL:
             ArithmeticOp(s, parts[0]);
             break;
-        case ifeq:
+        case IFEQ:
             if(peek_stack(s)) perfJMP(parts[1]-1, f);
             break;
-        case jump:
+        case JUMP:
             perfJMP(parts[1]-1, f);
             break;
-        case print:
+        case PRINT:
         /*
             1: print ascii value
             0: print numeric value
@@ -194,10 +193,10 @@ char execute(stack* s, FILE* f, char* statement) {
                 exit(1);
             }
             break;
-        case dupl:
+        case DUPL:
             push_in_stack(s, peek_stack(s));
             break;
-        case swap:
+        case SWAP:
             if(s->TOP > 0) {
                 swap1 = peek_stack(s);
                 pop_from_stack(s);
@@ -207,7 +206,7 @@ char execute(stack* s, FILE* f, char* statement) {
                 push_in_stack(s, swap2);
             }
             break;
-        case ignore_line:
+        case IGNORE:
             break;
     }
 
