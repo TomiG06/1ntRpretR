@@ -170,59 +170,6 @@ int64_t* parse_line(char* uncleaned_statement) {
 }
 
 //Checks for command and executes it 
-char execute(stack* s, FILE* f, int64_t* parts) {
-    int64_t swap1, swap2;
-
-    switch(parts[0]) {
-        case PUSH:
-            push_in_stack(s, parts[1]);
-            break;
-        case POP:
-            pop_from_stack(s);
-            break;
-        case ADD:
-        case SUB:
-        case MUL:
-            ArithmeticOp(s, parts[0]);
-            break;
-        case IFEQ:
-            if(peek_stack(s)) perfJMP(parts[1]-1, f);
-            break;
-        case JUMP:
-            perfJMP(parts[1]-1, f);
-            break;
-        case PRINT:
-        /*
-            1: print ascii value
-            0: print numeric value
-        */
-            if(parts[1] == 1) putchar(peek_stack(s));
-            else if(!parts[1]) printf("%ld", peek_stack(s));
-            else {
-                fprintf(stderr, "Error: invalid parameter '%ld'\n", parts[1]);
-                free(parts);
-                free(s);
-                exit(1);
-            }
-            break;
-        case DUPL:
-            push_in_stack(s, peek_stack(s));
-            break;
-        case SWAP:
-            if(s->TOP > 0) {
-                swap1 = peek_stack(s);
-                pop_from_stack(s);
-                swap2 = peek_stack(s);
-                pop_from_stack(s);
-                push_in_stack(s, swap1);
-                push_in_stack(s, swap2);
-            }
-            break;
-        case IGNORE:
-            break;
-    }
-
-    free(parts);
-}
+void execute(stack* s, FILE* f, int64_t* parts);
 
 #endif
