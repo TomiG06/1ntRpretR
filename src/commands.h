@@ -32,18 +32,18 @@ char command_uses_param(char command) {
 }
 
 //Checks if operand is decimal number
-uint8_t OperandIsNumber(char* str) {
+int64_t OperandIsNumber(char* str) {
     for(int x = 0; x < strlen(str); x++) {
-        if(!isdigit(str[x])) {
+        if(!isdigit(str[x]) && str[x] != '-' && str[x] != '+') {
             fprintf(stderr, "'%s' operand is not a decimal number\n", str);
             exit(1);
         }
     }
-    return 10;
+    return atoi(str);
 }
 
 //Does sub, add and mul
-int64_t ArithmeticOp(stack *s, size_t op) {
+void ArithmeticOp(stack *s, size_t op) {
     int64_t first = peek_stack(s);
     pop_from_stack(s);
     int64_t second = peek_stack(s);
@@ -103,7 +103,9 @@ char* trim(char* str, char del) {
 
 //Returns array with command and operand if exists
 int64_t* parse_line(char* uncleaned_statement) {
-    char* statement = trim(uncleaned_statement, ' ');
+    
+    char* statement = trim(uncleaned_statement, 10);
+    statement = trim(statement, ' ');
     
     int64_t* ret = (int64_t*)malloc(2*sizeof(int64_t));
     //Check if line should be ignored
@@ -153,7 +155,7 @@ int64_t* parse_line(char* uncleaned_statement) {
             free(operand);
             exit(1);
         }
-        ret[1] = strtol(operand, NULL, OperandIsNumber(operand));
+        ret[1] = OperandIsNumber(operand);
     } else {
         if(strcmp(operand, "")) {
             fprintf(stderr, "Error: '%s' command uses no operand\n", command);

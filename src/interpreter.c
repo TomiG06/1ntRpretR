@@ -1,3 +1,7 @@
+/*
+    Interpreter implementation for the language
+*/
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <unistd.h>
@@ -60,11 +64,8 @@ void execute(stack* s, FILE* f, int64_t* parts) {
 void interpret(FILE* source) {
     stack* s = stackInit(); //the stack
     char buffer[256]; //Keeps command to be executed
-    size_t len;
 
-    while(fgets(buffer, 256, source) != NULL) {
-        len = strlen(buffer);
-        if(buffer[len-1] == 10) buffer[len-1] = 0;
+    while(fgets(buffer, 256, source)) {
         execute(s, source, parse_line(buffer));
     }
 
