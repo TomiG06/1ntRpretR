@@ -22,7 +22,11 @@ void compile_to_bytecode(FILE* sc, char* bc_filename) {
         parse_line checks provides syntax error checking
         so we pass every line to check for syntax errors
     */
-    while(fgets(buffer, MAX_LENGTH, sc)) free(parse_line(buffer));
+    int lines = 0;
+    while(fgets(buffer, MAX_LENGTH, sc)) {
+        free(parse_line(buffer));
+        lines++;
+    }
 
     int64_t* parts = (int64_t*)malloc(2*sizeof(int64_t));
     uint64_t* bytecode = (uint64_t*) malloc(sizeof(uint64_t));
@@ -36,6 +40,9 @@ void compile_to_bytecode(FILE* sc, char* bc_filename) {
             In these cases, it's better to use the interpreter
             check interpreter.c
         */
+        if((parts[0] == JUMP || parts[0] == IFEQ) && (parts[1] > lines || parts[1] < 1)) {
+            fprintf(stderr, "Error in line %ld:\n\tCannot perform jump on line %ld\n", line, parts[1]);
+        }
         if(parts[1] > MAX_IMM) {
             fprintf(stderr, "Error in line %ld:\n\tMax number you can use is %ld, you used %ld\n", line, MAX_IMM, parts[1]);
             exit(1);
