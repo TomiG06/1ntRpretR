@@ -12,7 +12,7 @@
 #include "commands.h"
 
 #define MAX_LENGTH 0xff
-#define MAX_IMM (1UL << 31) -1
+#define MAX_IMM (1L << 31) -1
 #define MIN_IMM (1 << 31)
 
 void compile_to_bytecode(FILE* sc, char* bc_filename) {
@@ -32,11 +32,8 @@ void compile_to_bytecode(FILE* sc, char* bc_filename) {
     fseek(sc, 0, SEEK_SET);
     while(fgets(buffer, MAX_LENGTH, sc)) {
         parts = parse_line(buffer);
-
-        if(parts[0] == IGNORE) continue;
-
         /*
-            About these cases here it's better to use the interpreter
+            In these cases, it's better to use the interpreter
             check interpreter.c
         */
         if(parts[1] > MAX_IMM) {
