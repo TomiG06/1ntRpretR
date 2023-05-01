@@ -1,10 +1,6 @@
 #include <cstdlib>
 #include "stack.h"
-
-void err(string msg) {
-    cout << "Error: " << msg << endl;
-    exit(1);
-}
+#include "helpers.h"
 
 void Stack::push(int64_t num) {
     if(this->TOP == MAX) {

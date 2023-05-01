@@ -18,7 +18,8 @@ enum {
     SWAP,
     EXIT,
 
-    CMD_N
+    CMD_N,
+    IGNORE
 };
 
 typedef struct {
@@ -40,5 +41,10 @@ const command commands[CMD_N] = {
     {SWAP,  "swap",     false   },
     {EXIT,  "exit",     false   }
 };
+
+typedef struct {
+    uint8_t opcode;
+    int64_t operand;
+} instruction;
 
 #endif
