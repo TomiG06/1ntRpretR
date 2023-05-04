@@ -6,7 +6,7 @@
 #include <cstdint>
 
 enum {
-    PUSH,
+    PUSH = 0,
     POP,
     ADD,
     SUB,
@@ -25,21 +25,21 @@ enum {
 typedef struct {
     uint8_t     opcode;
     std::string cmd;
-    bool        has_operand;
+    uint8_t     operand_N;
 } command;
 
 const command commands[CMD_N] = {
-    {PUSH,  "push",     true    },
-    {POP,   "pop" ,     false   },
-    {ADD,   "add",      false   },
-    {SUB,   "sub",      false   },
-    {IFEQ,  "ifeq",     true    },
-    {JUMP,  "jump",     true    },
-    {PRINT, "print",    true    },
-    {DUPL,  "dupl",     false   },
-    {MUL,   "mul",      false   },
-    {SWAP,  "swap",     false   },
-    {EXIT,  "exit",     false   }
+    {PUSH,  "push",     1},
+    {POP,   "pop" ,     0},
+    {ADD,   "add",      0},
+    {SUB,   "sub",      0},
+    {IFEQ,  "ifeq",     1},
+    {JUMP,  "jump",     1},
+    {PRINT, "print",    1},
+    {DUPL,  "dupl",     0},
+    {MUL,   "mul",      0},
+    {SWAP,  "swap",     0},
+    {EXIT,  "exit",     0}
 };
 
 typedef struct {
