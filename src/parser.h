@@ -7,11 +7,12 @@
 
 class Parser {
     public:
-        instruction*    parse(std::string txt);
-        instruction     parse_line(std::string txt);
+        instruction*    parse(bool from_file);
+        instruction     parse_line(std::string txt, ssize_t line_N);
 
     private:
         std::string text;
+        std::string fname;
 
         std::string trim(std::string txt, char del);
 

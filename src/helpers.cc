@@ -1,7 +1,7 @@
 #include <iostream>
-#include <helpers.h>
+#include "helpers.h"
 
-void err(std::string msg) {
+void error(std::string msg) {
     std::cout << "Error: " << msg << std::endl;
     exit(1);
 }

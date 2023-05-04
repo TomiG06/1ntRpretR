@@ -2,6 +2,7 @@
 #include <string>
 #include <vector>
 #include <cctype>
+#include <algorithm>
 
 #include "commands.h"
 #include "parser.h"
@@ -22,7 +23,7 @@ std::vector<std::string> Parser::split(std::string txt) {
     while(end < limit) {
 
         if(txt[end] == ' ' || txt[end] == '\t' || txt[end] == '\0') {
-            ret.push_back(std::string(&txt[start], &txt[end]+1));
+            ret.push_back(std::string(&txt[start], &txt[end]));
 
             if(txt[end] == '\0') break;
             
@@ -66,11 +67,57 @@ std::string Parser::trim(std::string txt, char del) {
     return std::string(str, str + len);
 }
 
-int64_t Parser::to_number(std::string txt) {
+int64_t Parser::to_integer(std::string txt) {
     for(char &c: txt) {
-        if(!isdigit(c) && c != '-' && c != '+') error(txt << "is not a decimal number");
+        if(!isdigit(c) && c != '-' && c != '+') {
+            error(txt + "is not a decimal number");
+        }
     }
 
-    return std::atoll(txt);
+    return std::atoll(txt.c_str());
+}
+
+instruction Parser::parse_line(std::string txt, ssize_t line_N) {
+    txt = Parser::trim(txt, '\n');
+    txt = Parser::trim(txt, ' ');
+
+    std::vector<std::string> seped = Parser::split(txt);
+
+    instruction ret;
+
+    ret.operand = 0;
+
+    if(seped[0] == "" || seped[0][0] == '#') {
+        ret.opcode = IGNORE;
+        return ret;
+    }
+
+    bool found = false;
+    std::transform(seped[0].cbegin(), seped[0].cend(), seped[0].begin(), tolower);
+
+    for(uint8_t i = 0; i < CMD_N; ++i) {
+        if(commands[i].cmd == seped[0]) {
+            ret.opcode = commands[i].opcode;
+
+            if(commands[i].operand_N != seped.size()-1) {
+                error("Line " + std::to_string(line_N) + ": Command '" + seped[0] + "' expects " 
+                        + std::to_string(commands[i].operand_N) + " operands but was given " + std::to_string(seped.size()-1));
+            }
+
+            if(commands[i].operand_N > 0) {
+                ret.operand = Parser::to_integer(seped[1]);
+            }
+
+            found = true;
+
+            break;
+        }
+    }
+
+    if(!found) {
+        error("Line " + std::to_string(line_N) + ": Uknown command '" + seped[0] + "'");
+    }
+
+    return ret;
 }
 
