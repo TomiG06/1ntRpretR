@@ -1,4 +1,5 @@
 #include <iostream>
+#include <fstream>
 #include <string>
 #include <vector>
 #include <cctype>
@@ -119,5 +120,27 @@ instruction Parser::parse_line(std::string txt, ssize_t line_N) {
     }
 
     return ret;
+}
+
+std::vector<instruction> Parser::parse(std::string fname) {
+    std::ifstream f(fname);
+
+    std::string line;
+    std::vector<instruction> instructions;
+    instruction instr;
+    ssize_t lineN = 1;
+    
+
+    while(std::getline(f, line)) {
+        instr = Parser::parse_line(line, lineN);
+
+        instructions.push_back(instr);
+
+        ++lineN;
+    }
+
+    f.close();
+
+    return instructions;
 }
 

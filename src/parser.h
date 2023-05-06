@@ -7,13 +7,11 @@
 
 class Parser {
     public:
-        instruction*    parse(bool from_file);
+        std::vector<instruction>    parse(std::string fname);
+
         instruction     parse_line(std::string txt, ssize_t line_N);
 
     private:
-        std::string text;
-        std::string fname;
-
         std::string trim(std::string txt, char del);
 
         std::vector<std::string> split(std::string txt);
