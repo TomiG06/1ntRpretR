@@ -4,7 +4,7 @@ based on an [answer](https://stackoverflow.com/questions/6887471/how-would-i-go-
 
 ## Briefly
 
-Used to contain only an interpreter, now it also contains a bytecode compiler and a vm to run the bytecode. I kept the same name because I was just bored to change it. Anyway this thing is just built for fun :)
+This is an interpreter implementation for a stack based assembly-like language. It used to be written in C but because the whole program was a shit I reimplemented it in C++.
 
 ## Environment
 * 11 commands (see below for more details)
