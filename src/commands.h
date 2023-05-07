@@ -6,20 +6,20 @@
 #include <cstdint>
 
 enum {
-    PUSH = 0,
-    POP,
-    ADD,
-    SUB,
-    IFEQ,
-    JUMP,
-    PRINT,
-    DUPL,
-    MUL,
-    SWAP,
-    EXIT,
+    PUSH = 0,   //00
+    POP,        //01
+    ADD,        //02
+    SUB,        //03
+    IFEQ,       //04
+    JUMP,       //05
+    PRINT,      //06
+    DUPL,       //07
+    MUL,        //08
+    SWAP,       //09
+    EXIT,       //10
 
     CMD_N,
-    IGNORE
+    IGNORE      //12
 };
 
 typedef struct {
