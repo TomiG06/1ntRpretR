@@ -10,11 +10,12 @@ Interpreter::Interpreter() {
 }
 
 void Interpreter::set_ip(ssize_t offs) {
-    if(!(0 <= offs && offs < this->end)) {
-        error("Pointer out of bounds");
+    offs -= 1;
+    if(0 > offs || offs > this->end-1) {
+        error("Pointer out of bounds" + std::to_string(offs));
     }
 
-    this->instr_p = offs;
+    this->instr_p = offs-1;
 }
 
 void Interpreter::execute_instr() {
