@@ -4,23 +4,27 @@
 
 void Stack::push(int64_t num) {
     if(this->TOP == MAX) {
-        err("Stack Overflow");
+        error("Stack Overflow");
     }
-    this->stack[this->TOP++] = num;
+    this->stack.push_back(num);
+    ++this->TOP;
 }
 
 void Stack::pop() {
     if(this->TOP == 0) {
-        err("Empty Stack");
+        error("Empty Stack");
     }
     
-    this->stack[this->TOP--] = 0;
+    this->stack.pop_back();
+    --this->TOP;
 }
 
-int64_t Stack::peek() { return this->_stack[this->TOP]; }
+int64_t Stack::peek() {
+    return this->stack[this->TOP-1];
+}
 
 Stack::Stack() {
+    this->stack = {};
     this->TOP = 0;
-    this->stack = {0};
 }
 

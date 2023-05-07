@@ -1,14 +1,15 @@
 #ifndef STACK_H
 #define STACK_H
 
-#include <stdint.h>
+#include <vector>
+#include <cstdint>
 
 #define MAX 0xFF
 
 class Stack {
     private:
-        int64_t stack[MAX];
-        int16_t TOP;
+        std::vector<int64_t> stack;
+        uint8_t TOP;
 
     public:
         Stack();
