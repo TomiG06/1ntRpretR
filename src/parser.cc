@@ -75,7 +75,7 @@ int64_t Parser::to_integer(std::string txt) {
         }
     }
 
-    return std::atoll(txt.c_str());
+    return std::strtoll(txt.c_str(), NULL, 10);
 }
 
 instruction Parser::parse_line(std::string txt, ssize_t line_N) {

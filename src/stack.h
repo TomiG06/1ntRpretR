@@ -9,7 +9,7 @@
 class Stack {
     private:
         std::vector<int64_t> stack;
-        uint8_t TOP;
+        int16_t TOP;
 
     public:
         Stack();
