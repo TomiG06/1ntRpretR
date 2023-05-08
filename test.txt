@@ -1,12 +1,18 @@
-push  97
+push 96
+push 0
+
+pop
+push 1
+add
+print 1
+
 dupl
-print
-pop
-pop
-push 256
-print
-push 1    
-sub
+push -122
+add
+ifeq 4
 
-  ifeq    7   
+push 10
+print 1
 
+
+#this is  a comment
