@@ -9,17 +9,16 @@ enum {
     PUSH = 0,   //00
     POP,        //01
     ADD,        //02
-    SUB,        //03
-    IFEQ,       //04
-    JUMP,       //05
-    PRINT,      //06
-    DUPL,       //07
-    MUL,        //08
-    SWAP,       //09
-    EXIT,       //10
+    IFEQ,       //03
+    JUMP,       //04
+    PRINT,      //05
+    DUPL,       //06
+    MUL,        //07
+    SWAP,       //08
+    EXIT,       //09
 
     CMD_N,
-    IGNORE      //12
+    IGNORE      //10
 };
 
 typedef struct {
@@ -32,7 +31,6 @@ const command commands[CMD_N] = {
     {PUSH,  "push",     1},
     {POP,   "pop" ,     0},
     {ADD,   "add",      0},
-    {SUB,   "sub",      0},
     {IFEQ,  "ifeq",     1},
     {JUMP,  "jump",     1},
     {PRINT, "print",    1},

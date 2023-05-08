@@ -32,7 +32,6 @@ void Interpreter::execute_instr() {
             this->stack.pop();
             break;
         case ADD:
-        case SUB:
         case MUL:
         case SWAP:
             a = this->stack.peek();
@@ -43,9 +42,6 @@ void Interpreter::execute_instr() {
             switch(instr.opcode) {
                 case ADD:
                     this->stack.push(a + b);
-                    break;
-                case SUB:
-                    this->stack.push(b - a);
                     break;
                 case MUL:
                     this->stack.push(a * b);
