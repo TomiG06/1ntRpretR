@@ -57,7 +57,11 @@ void Interpreter::execute_instr() {
             }
             break;
         case IFEQ:
+
+        #pragma GCC diagnostic ignored "-Wimplicit-fallthrough"
             if(this->stack.peek() == 0) break;
+        #pragma GCC diagnostic pop
+
         case JUMP:
             Interpreter::set_ip(instr.operand);
             break;
