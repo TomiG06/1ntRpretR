@@ -1,6 +1,10 @@
 #ifndef STACK_H
 #define STACK_H
 
+/*
+    Stack implementation used at runtime
+*/
+
 #include <vector>
 #include <cstdint>
 

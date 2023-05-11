@@ -68,6 +68,12 @@ std::string Parser::trim(std::string txt, char del) {
     return std::string(str, str + len);
 }
 
+
+
+/*
+    This method is used to convert instruction operands
+    from string to integers (64-bit signed)
+*/
 int64_t Parser::to_integer(std::string txt) {
     for(char &c: txt) {
         if(!isdigit(c) && c != '-' && c != '+') {
@@ -88,12 +94,15 @@ instruction Parser::parse_line(std::string txt, ssize_t line_N) {
 
     ret.operand = 0;
 
+    /* Either a comment or an empty line */
     if(seped[0] == "" || seped[0][0] == '#') {
         ret.opcode = IGNORE;
         return ret;
     }
 
     bool found = false;
+
+    /* Command to lower */
     std::transform(seped[0].cbegin(), seped[0].cend(), seped[0].begin(), tolower);
 
     for(uint8_t i = 0; i < CMD_N; ++i) {

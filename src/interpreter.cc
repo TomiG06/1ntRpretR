@@ -12,7 +12,7 @@ Interpreter::Interpreter() {
 void Interpreter::set_ip(ssize_t offs) {
     offs -= 1;
     if(0 > offs || offs > this->end-1) {
-        error("Pointer out of bounds" + std::to_string(offs));
+        error("Pointer " + std::to_string(offs+1) + " out of bounds\nBounds: [1, " + std::to_string(this->end) + "]");
     }
 
     this->instr_p = offs-1;
@@ -53,6 +53,11 @@ void Interpreter::execute_instr() {
             }
             break;
         case IFEQ:
+
+        /*
+            Performs JUMP for non-zero values
+            so do not remove the warning suppressor
+        */
 
         #pragma GCC diagnostic ignored "-Wimplicit-fallthrough"
             if(this->stack.peek() == 0) break;
