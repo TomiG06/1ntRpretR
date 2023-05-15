@@ -4,10 +4,16 @@
 #include <vector>
 #include <cctype>
 #include <algorithm>
+#include <regex>
 
 #include "commands.h"
 #include "parser.h"
 #include "helpers.h"
+
+/* 
+    Used in Parser::to_integer 
+*/
+static std::regex pattern("^[+-]?(\\d*)$");
 
 std::vector<std::string> Parser::split(std::string txt) {
     
@@ -75,10 +81,8 @@ std::string Parser::trim(std::string txt, char del) {
     from string to integers (64-bit signed)
 */
 int64_t Parser::to_integer(std::string txt) {
-    for(char &c: txt) {
-        if(!isdigit(c) && c != '-' && c != '+') {
-            error(txt + "is not a decimal number");
-        }
+    if(!std::regex_match(txt, pattern)) {
+        error(txt + " is not a decimal number");
     }
 
     return std::strtoll(txt.c_str(), NULL, 10);
