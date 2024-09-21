@@ -82,7 +82,7 @@ std::string Parser::trim(std::string txt, char del) {
 */
 int64_t Parser::to_integer(std::string txt) {
     if(!std::regex_match(txt, pattern)) {
-        error(txt + " is not a decimal number");
+        error(txt + " is not an integer");
     }
 
     return std::strtoll(txt.c_str(), NULL, 10);

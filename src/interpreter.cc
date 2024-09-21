@@ -19,7 +19,7 @@ void Interpreter::set_ip(ssize_t offs) {
 }
 
 void Interpreter::execute_instr() {
-    /* Some variables that help thorugh execution */
+    /* Some variables that help during execution */
     int64_t a, b;
 
     instruction instr = this->instrs->at(this->instr_p);
